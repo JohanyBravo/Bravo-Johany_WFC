@@ -1,142 +1,203 @@
 const celdas = [];
-const RETICULA = 4;
+const RETICULA = 5;
 const azulejos = [];
-const NA = 16;
+const NA = 19;
+let ancho;
+let alto;
+
 const reglas = [
   {
-    // tile 0
+    // Tile0
     UP: 0,
     RIGHT: 1,
     DOWN: 0,
     LEFT: 1,
   },
   {
-    // tile 1
+    // Tile01
     UP: 0,
     RIGHT: 2,
     DOWN: 0,
     LEFT: 1,
   },
   {
-    // tile 2
+    // Tile02
     UP: 0,
     RIGHT: 1,
     DOWN: 0,
     LEFT: 0,
   },
   {
-    // tile 3
+    // Tile03
     UP: 0,
     RIGHT: 1,
     DOWN: 1,
     LEFT: 0,
   },
   {
-    // tile 4
+    // Tile04
     UP: 0,
     RIGHT: 1,
     DOWN: 0,
     LEFT: 0,
   },
   {
-    // tile 5
+    // Tile05
     UP: 1,
     RIGHT: 0,
     DOWN: 1,
     LEFT: 0,
   },
   {
-    // tile 6
+    // Tile06
     UP: 0,
     RIGHT: 0,
     DOWN: 1,
     LEFT: 0,
   },
   {
-    // tile 7
+    // Tile07
     UP: 0,
     RIGHT: 0,
     DOWN: 0,
     LEFT: 0,
   },
   {
-    // tile 8
+    // Tile08
     UP: 0,
     RIGHT: 2,
     DOWN: 0,
     LEFT: 1,
   },
   {
-    // tile 9
+    // Tile09
     UP: 0,
     RIGHT: 1,
     DOWN: 0,
     LEFT: 1,
   },
   {
-    // tile 10
+    // Tile10
     UP: 1,
     RIGHT: 0,
     DOWN: 0,
     LEFT: 0,
   },
   {
-    // tile 11
+    // Tile11
     UP: 0,
     RIGHT: 1,
     DOWN: 0,
     LEFT: 2,
   },
   {
-    // tile 12
+    // Tile12
     UP: 0,
     RIGHT: 1,
     DOWN: 0,
     LEFT: 2,
   },
   {
-    // tile 13
+    // Tile13
     UP: 1,
     RIGHT: 0,
     DOWN: 1,
     LEFT: 0,
   },
   {
-    // tile 14
+    // Tile14
     UP: 1,
     RIGHT: 0,
     DOWN: 0,
     LEFT: 0,
   },
   {
-    // tile 15
+    // Tile15
     UP: 0,
     RIGHT: 1,
     DOWN: 0,
     LEFT: 0,
+  },
+  {
+    // Tile16
+    UP: 0,
+    RIGHT: 0,
+    DOWN: 1,
+    LEFT: 1,
+  },
+  {
+    // Tile17
+    UP: 1,
+    RIGHT: 1,
+    DOWN: 0,
+    LEFT: 0,
+  },
+  {
+    // Tile18
+    UP: 1,
+    RIGHT: 0,
+    DOWN: 0,
+    LEFT: 1,
   },
 ];
+
 function preload() {
-  for (let i = 0; i < NA; ii++) {
-    azulejos[i] = loadImage(`azulejos/tile${i}.png`);
+  for (let i = 0; i < NA; i++) {
+    azulejos[i] = loadImage(`azulejos/Tile${i}.png`);
   }
 }
 
 function setup() {
   createCanvas(1080, 1080);
-  let opciones = [];
-  for (let i = 0; i < azulejos.length; ) {}
-  print(azulejos);
-  opcionesI.push(i);
+
+  ancho = width / RETICULA;
+  alto = height / RETICULA;
+
+  let opcionesI = [];
+  for (let i = 0; i < azulejos.length; i++) {
+    opcionesI.push(i);
+    //    ancho = width / RETICULA;
+    //    alto = height / RETICULA;
+    //     // print(azulejos);
+  }
+
+  for (let i = 0; i < RETICULA * RETICULA; i++) {
+    celdas[i] = {
+      colapsada: false,
+      opciones: opcionesI,
+    };
+    // celdas[8];
+    //   // print(celdas);
+  }
 }
-for (let i = 0; i < RETICULA * RETICULA; i++) {
-  celdas[i] = {
-    colapsada: false,
-    opciones: opcionesI,
-  };
-}
-print(celdas);
 
 function draw() {
-  circle(mouseX, mouseY, 20);
+  background(0);
+  const celdasDisponibles = celdas.filter((celda) => {
+    return celda.colapsada == false;
+  });
+  if (celdasDisponibles.length > 0) {
+    celdasDisponibles.sort((a, b) => {
+      return a.opciones.length - b.opciones.length;
+    });
+    const celdasPorColapsar = celdasDisponibles.filter((celda) => {
+      return celda.opciones == celdasDisponibles[0].opciones.length;
+    });
+
+    const celdaSeleccionada = random(celdasPorColapsar);
+    celdaSeleccionada.colapsada = true;
+    const opcionSelecionada = random(celdaSeleccionada.opciones);
+    celdaSeleccionada.opciones = [opcionSelecionada];
+    print(celdaSeleccionada);
+
+    for (let x = 0; x < RETICULA; x++) {
+      for (let y = 0; y < RETICULA; y++) {
+        const celdaIndex = x + y * RETICULA;
+        const celdaActual = celdas[celdaIndex];
+        if (celdaActual.colapsada) {
+          image(azulejos[celdaActual.opciones[0]], x, y);
+        }
+      }
+    }
+  }
 }
